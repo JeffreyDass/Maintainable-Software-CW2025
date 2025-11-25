@@ -4,7 +4,11 @@ import com.comp2042.logic.bricks.Brick;
 import com.comp2042.logic.bricks.BrickGenerator;
 import com.comp2042.logic.bricks.RandomBrickGenerator;
 
-import java.awt.*;
+import java.awt.Point;
+import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleBoard implements Board {
 
@@ -15,6 +19,9 @@ public class SimpleBoard implements Board {
     private int[][] currentGameMatrix;
     private Point currentOffset;
     private final Score score;
+    private Brick heldBrick = null;
+    private boolean holdUsed = false;
+    private final Queue<Brick> nextPieces = new ArrayDeque<>();
 
     public SimpleBoard(int width, int height) {
         this.width = width;
@@ -23,7 +30,15 @@ public class SimpleBoard implements Board {
         brickGenerator = new RandomBrickGenerator();
         brickRotator = new BrickRotator();
         score = new Score();
+        for (int i = 0; i < 3; i++) {
+            nextPieces.add(brickGenerator.getBrick());
+        }
     }
+
+    public Brick getHeldBrick() {
+        return heldBrick;
+    }
+
 
     @Override
     public boolean moveBrickDown() {
@@ -81,12 +96,62 @@ public class SimpleBoard implements Board {
         }
     }
 
+//    @Override
+//    public boolean createNewBrick() {
+//        Brick currentBrick = brickGenerator.getBrick();
+//        brickRotator.setBrick(currentBrick);
+//        currentOffset = new Point(4, 1);
+//        return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+//    }
+
     @Override
     public boolean createNewBrick() {
-        Brick currentBrick = brickGenerator.getBrick();
+
+        // Take the next brick from the queue
+        Brick currentBrick = nextPieces.poll();
         brickRotator.setBrick(currentBrick);
-        currentOffset = new Point(4, 10);
-        return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+
+        // Generate a new brick and add to queue
+        nextPieces.add(brickGenerator.getBrick());
+
+        // Reset hold usage for this turn
+        holdUsed = false;
+
+        // Spawn position (centered)
+        currentOffset = new Point(4, 1);
+
+        // Check game-over on spawn
+        return MatrixOperations.intersect(
+                currentGameMatrix,
+                brickRotator.getCurrentShape(),
+                currentOffset.x,
+                currentOffset.y
+        );
+    }
+
+    public ViewData holdBrick() {
+
+        // If player already held this turn, ignore
+        if (holdUsed) {
+            return getViewData();
+        }
+
+        if (heldBrick == null) {
+            // First time holding: store current brick, spawn a new one
+            heldBrick = brickRotator.getCurrentBrick();
+            createNewBrick();
+        } else {
+            // Swap held ↔ current
+            Brick temp = brickRotator.getCurrentBrick();
+            brickRotator.setBrick(heldBrick);
+            heldBrick = temp;
+
+            // Reset spawn offset after swap
+            currentOffset = new Point(width / 2 - 2, 0);
+        }
+
+        holdUsed = true;
+        return getViewData();
     }
 
     @Override
@@ -96,7 +161,26 @@ public class SimpleBoard implements Board {
 
     @Override
     public ViewData getViewData() {
-        return new ViewData(brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY(), brickGenerator.getNextBrick().getShapeMatrix().get(0));
+
+        // Get the NEXT brick's shape from queue (without removing it)
+        Brick next = nextPieces.peek();
+        int[][] nextShape = next.getShapeMatrix().get(0);
+
+        return new ViewData(
+                brickRotator.getCurrentShape(),
+                currentOffset.x,
+                currentOffset.y,
+                nextShape
+        );
+    }
+
+    @Override
+    public List<int[][]> getNextQueueShapes() {
+        List<int[][]> list = new ArrayList<>();
+        for (Brick b : nextPieces) {
+            list.add(b.getShapeMatrix().get(0));
+        }
+        return list;
     }
 
     @Override

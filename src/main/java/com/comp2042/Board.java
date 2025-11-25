@@ -1,5 +1,7 @@
 package com.comp2042;
 
+import java.util.List;
+
 public interface Board {
 
     boolean moveBrickDown();
@@ -15,6 +17,8 @@ public interface Board {
     int[][] getBoardMatrix();
 
     ViewData getViewData();
+
+    List<int[][]> getNextQueueShapes();
 
     void mergeBrickToBackground();
 

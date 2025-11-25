@@ -12,6 +12,7 @@ public class GameController implements InputEventListener {
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
         viewGuiController.bindScore(board.getScore().scoreProperty());
+        viewGuiController.updateNextQueue(board.getNextQueueShapes());
     }
 
     @Override
@@ -30,6 +31,8 @@ public class GameController implements InputEventListener {
 
             viewGuiController.refreshGameBackground(board.getBoardMatrix());
 
+            viewGuiController.updateNextQueue(board.getNextQueueShapes());
+
         } else {
             if (event.getEventSource() == EventSource.USER) {
                 board.getScore().add(1);
@@ -41,18 +44,21 @@ public class GameController implements InputEventListener {
     @Override
     public ViewData onLeftEvent(MoveEvent event) {
         board.moveBrickLeft();
+        viewGuiController.updateNextQueue(board.getNextQueueShapes());
         return board.getViewData();
     }
 
     @Override
     public ViewData onRightEvent(MoveEvent event) {
         board.moveBrickRight();
+        viewGuiController.updateNextQueue(board.getNextQueueShapes());
         return board.getViewData();
     }
 
     @Override
     public ViewData onRotateEvent(MoveEvent event) {
         board.rotateLeftBrick();
+        viewGuiController.updateNextQueue(board.getNextQueueShapes());
         return board.getViewData();
     }
 
@@ -60,6 +66,7 @@ public class GameController implements InputEventListener {
     @Override
     public void createNewGame() {
         board.newGame();
+        viewGuiController.updateNextQueue(board.getNextQueueShapes());
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
     }
 }

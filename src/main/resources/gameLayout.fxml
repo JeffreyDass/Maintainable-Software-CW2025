@@ -6,21 +6,51 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
+
 <Pane fx:controller="com.comp2042.GuiController"
       xmlns:fx="http://javafx.com/fxml">
+
+    <!-- Active falling block -->
     <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
+
+    <!-- Main game board -->
     <BorderPane styleClass="gameBoard" fx:id="gameBoard">
         <center>
             <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="30" layoutX="40"/>
         </center>
     </BorderPane>
 
+    <VBox layoutX="240" layoutY="40" spacing="10"
+          alignment="TOP_CENTER"
+          style="-fx-background-color: rgba(0,0,0,0.30);
+             -fx-padding: 12px;
+             -fx-border-color: white;
+             -fx-border-width: 3;
+             -fx-border-radius: 8;
+             -fx-background-radius: 8;">
+
+        <Label text="NEXT"
+               style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"
+               alignment="CENTER" />
+
+        <!-- THREE PREVIEW PANELS INSIDE ONE BOX -->
+        <GridPane fx:id="nextPanel1" hgap="2" vgap="2" alignment="CENTER"/>
+
+        <GridPane fx:id="nextPanel2" hgap="2" vgap="2" alignment="CENTER"/>
+
+        <GridPane fx:id="nextPanel3" hgap="2" vgap="2" alignment="CENTER"/>
+
+    </VBox>
+
+    <!-- Score popups / GameOver -->
     <Group fx:id="groupNotification" layoutX="14" layoutY="203">
         <VBox alignment="CENTER">
             <GameOverPanel fx:id="gameOverPanel"/>
         </VBox>
     </Group>
+
     <stylesheets>
         <URL value="@window_style.css"/>
     </stylesheets>
+
 </Pane>

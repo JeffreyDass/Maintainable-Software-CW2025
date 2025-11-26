@@ -34,6 +34,8 @@ public class GuiController implements Initializable {
     @FXML private GridPane nextPanel2;
     @FXML private GridPane nextPanel3;
 
+    @FXML private GridPane holdPanel;
+
     @FXML private GameOverPanel gameOverPanel;
 
     private Rectangle[][] displayMatrix;
@@ -43,6 +45,8 @@ public class GuiController implements Initializable {
     private final Rectangle[][] nextMatrix1 = new Rectangle[4][4];
     private final Rectangle[][] nextMatrix2 = new Rectangle[4][4];
     private final Rectangle[][] nextMatrix3 = new Rectangle[4][4];
+
+    private final Rectangle[][] holdMatrix = new Rectangle[4][4];
 
     private InputEventListener eventListener;
     private Timeline timeLine;
@@ -60,10 +64,11 @@ public class GuiController implements Initializable {
 
         gamePanel.setOnKeyPressed(this::handleKeyPress);
 
-        // build preview boxes
         setupPreviewPanel(nextPanel1, nextMatrix1);
         setupPreviewPanel(nextPanel2, nextMatrix2);
         setupPreviewPanel(nextPanel3, nextMatrix3);
+
+        setupPreviewPanel(holdPanel, holdMatrix);
 
         gameOverPanel.setVisible(false);
     }
@@ -82,6 +87,11 @@ public class GuiController implements Initializable {
 
             if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S)
                 moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
+
+            if (e.getCode() == KeyCode.C) {
+                ViewData data = eventListener.onHoldEvent();
+                refreshBrick(data);
+            }
         }
 
         if (e.getCode() == KeyCode.N)
@@ -164,6 +174,17 @@ public class GuiController implements Initializable {
         drawToPreview(nextShapes.get(0), nextMatrix1);
         if (nextShapes.size() > 1) drawToPreview(nextShapes.get(1), nextMatrix2);
         if (nextShapes.size() > 2) drawToPreview(nextShapes.get(2), nextMatrix3);
+    }
+
+    public void updateHold(int[][] shape) {
+        clearPreview(holdMatrix);
+        if (shape == null) return;
+
+        for (int r = 0; r < shape.length; r++) {
+            for (int c = 0; c < shape[r].length; c++) {
+                setRectangleData(shape[r][c], holdMatrix[r][c]);
+            }
+        }
     }
 
     /** Draw a shape into a preview grid */

@@ -147,7 +147,7 @@ public class SimpleBoard implements Board {
             heldBrick = temp;
 
             // Reset spawn offset after swap
-            currentOffset = new Point(width / 2 - 2, 0);
+            currentOffset = new Point(4, 1);
         }
 
         holdUsed = true;
@@ -185,7 +185,12 @@ public class SimpleBoard implements Board {
 
     @Override
     public void mergeBrickToBackground() {
-        currentGameMatrix = MatrixOperations.merge(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+        currentGameMatrix = MatrixOperations.merge(currentGameMatrix,
+                brickRotator.getCurrentShape(),
+                (int) currentOffset.getX(),
+                (int) currentOffset.getY());
+
+        holdUsed = false;   // ⭐ reset HOLD lock AFTER brick lands
     }
 
     @Override
@@ -199,6 +204,12 @@ public class SimpleBoard implements Board {
     @Override
     public Score getScore() {
         return score;
+    }
+
+    @Override
+    public int[][] getHeldBrickShape() {
+        if (heldBrick == null) return null;
+        return heldBrick.getShapeMatrix().get(0);
     }
 
 

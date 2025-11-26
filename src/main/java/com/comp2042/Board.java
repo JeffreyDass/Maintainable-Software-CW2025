@@ -20,6 +20,10 @@ public interface Board {
 
     List<int[][]> getNextQueueShapes();
 
+    ViewData holdBrick();
+
+    int[][] getHeldBrickShape();
+
     void mergeBrickToBackground();
 
     ClearRow clearRows();

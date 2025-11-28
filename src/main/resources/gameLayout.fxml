@@ -11,16 +11,17 @@
       xmlns:fx="http://javafx.com/fxml">
 
     <!-- Active falling block -->
-    <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
+    <GridPane fx:id="brickPanel" vgap="1" hgap="1" layoutX="130"/>
 
     <!-- Main game board -->
-    <BorderPane styleClass="gameBoard" fx:id="gameBoard">
+    <BorderPane styleClass="gameBoard" fx:id="gameBoard" layoutX="130">
         <center>
+<!--            <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="30" layoutX="40"/>-->
             <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="30" layoutX="40"/>
         </center>
     </BorderPane>
 
-    <VBox layoutX="20" layoutY="40" spacing="10"
+    <VBox layoutX="5" layoutY="40" spacing="10"
           style="-fx-background-color: rgba(0,0,0,0.30);
              -fx-padding: 12px;
              -fx-border-color: white;
@@ -36,7 +37,7 @@
 
     </VBox>
 
-    <VBox layoutX="240" layoutY="40" spacing="10"
+    <VBox layoutX="370" layoutY="40" spacing="10"
           alignment="TOP_CENTER"
           style="-fx-background-color: rgba(0,0,0,0.30);
              -fx-padding: 12px;

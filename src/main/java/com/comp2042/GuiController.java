@@ -137,8 +137,8 @@ public class GuiController implements Initializable {
             }
         }
 
-        brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * BRICK_SIZE);
-        brickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getyPosition() * BRICK_SIZE - 42);
+        brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * brickPanel.getVgap() + brick.getxPosition() * BRICK_SIZE + 130);
+        brickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getyPosition() * brickPanel.getHgap() + brick.getyPosition() * BRICK_SIZE - 42);
 
         timeLine = new Timeline(new KeyFrame(Duration.millis(400),
                 ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))));
@@ -148,8 +148,8 @@ public class GuiController implements Initializable {
 
     /** Paint the falling brick */
     private void refreshBrick(ViewData brick) {
-        brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * BRICK_SIZE);
-        brickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getyPosition() * BRICK_SIZE - 42);
+        brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * brickPanel.getVgap() + brick.getxPosition() * BRICK_SIZE + 130);
+        brickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getyPosition() * brickPanel.getHgap() + brick.getyPosition() * BRICK_SIZE - 42);
 
         for (int i = 0; i < brick.getBrickData().length; i++) {
             for (int j = 0; j < brick.getBrickData()[i].length; j++) {

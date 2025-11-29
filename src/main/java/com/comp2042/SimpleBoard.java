@@ -18,6 +18,7 @@ public class SimpleBoard implements Board {
     private final BrickRotator brickRotator;
     private int[][] currentGameMatrix;
     private Point currentOffset;
+    private Point ghostBrickOffset;
     private final Score score;
     private Brick heldBrick = null;
     private boolean holdUsed = false;
@@ -50,6 +51,7 @@ public class SimpleBoard implements Board {
             return false;
         } else {
             currentOffset = p;
+            updateGhostBrick();
             return true;
         }
     }
@@ -65,6 +67,7 @@ public class SimpleBoard implements Board {
             return false;
         } else {
             currentOffset = p;
+            updateGhostBrick();
             return true;
         }
     }
@@ -79,6 +82,7 @@ public class SimpleBoard implements Board {
             return false;
         } else {
             currentOffset = p;
+            updateGhostBrick();
             return true;
         }
     }
@@ -92,41 +96,9 @@ public class SimpleBoard implements Board {
             return false;
         } else {
             brickRotator.setCurrentShape(nextShape.getPosition());
+            updateGhostBrick();
             return true;
         }
-    }
-
-//    @Override
-//    public boolean createNewBrick() {
-//        Brick currentBrick = brickGenerator.getBrick();
-//        brickRotator.setBrick(currentBrick);
-//        currentOffset = new Point(4, 1);
-//        return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
-//    }
-
-    @Override
-    public boolean createNewBrick() {
-
-        // Take the next brick from the queue
-        Brick currentBrick = nextPieces.poll();
-        brickRotator.setBrick(currentBrick);
-
-        // Generate a new brick and add to queue
-        nextPieces.add(brickGenerator.getBrick());
-
-        // Reset hold usage for this turn
-        holdUsed = false;
-
-        // Spawn position (centered)
-        currentOffset = new Point(4, 1);
-
-        // Check game-over on spawn
-        return MatrixOperations.intersect(
-                currentGameMatrix,
-                brickRotator.getCurrentShape(),
-                currentOffset.x,
-                currentOffset.y
-        );
     }
 
     public ViewData holdBrick() {
@@ -154,6 +126,55 @@ public class SimpleBoard implements Board {
         return getViewData();
     }
 
+//    @Override
+    private boolean updateGhostBrick() {
+        Point p = calculateGhostBrickOffset(currentOffset);
+        ghostBrickOffset = p;
+        return true;
+    }
+
+    private Point calculateGhostBrickOffset(Point num) {
+        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
+        Point p = new Point(num);
+
+        while(true) {
+            p.setLocation(currentOffset.getX(), p.getY() + 1);
+            boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
+            if (conflict) {
+                p.setLocation(p.getX(), p.getY() - 1) ;
+                return p;
+            }
+
+        }
+    }
+
+    @Override
+    public boolean createNewBrick() {
+
+        // Take the next brick from the queue
+        Brick currentBrick = nextPieces.poll();
+        brickRotator.setBrick(currentBrick);
+
+        // Generate a new brick and add to queue
+        nextPieces.add(brickGenerator.getBrick());
+
+        // Reset hold usage for this turn
+        holdUsed = false;
+
+        // Spawn position (centered)
+        currentOffset = new Point(4, 1);
+
+        ghostBrickOffset = calculateGhostBrickOffset(currentOffset);
+
+        // Check game-over on spawn
+        return MatrixOperations.intersect(
+                currentGameMatrix,
+                brickRotator.getCurrentShape(),
+                currentOffset.x,
+                currentOffset.y
+        );
+    }
+
     @Override
     public int[][] getBoardMatrix() {
         return currentGameMatrix;
@@ -170,6 +191,8 @@ public class SimpleBoard implements Board {
                 brickRotator.getCurrentShape(),
                 currentOffset.x,
                 currentOffset.y,
+                ghostBrickOffset.x,
+                ghostBrickOffset.y,
                 nextShape
         );
     }

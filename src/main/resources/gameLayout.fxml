@@ -12,6 +12,7 @@
 
     <!-- Active falling block -->
     <GridPane fx:id="brickPanel" vgap="1" hgap="1" layoutX="130"/>
+    <GridPane fx:id="ghostBrickPanel" vgap="1" hgap="1" layoutX="130"/>
 
     <!-- Main game board -->
     <BorderPane styleClass="gameBoard" fx:id="gameBoard" layoutX="130">

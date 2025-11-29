@@ -17,6 +17,7 @@ public class GameController implements InputEventListener {
 
     @Override
     public DownData onDownEvent(MoveEvent event) {
+//        viewGuiController.refreshBrick(board.getViewData());
         boolean canMove = board.moveBrickDown();
         ClearRow clearRow = null;
         if (!canMove) {

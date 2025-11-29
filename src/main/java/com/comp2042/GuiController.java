@@ -28,6 +28,7 @@ public class GuiController implements Initializable {
 
     @FXML private GridPane gamePanel;
     @FXML private GridPane brickPanel;
+    @FXML private GridPane ghostBrickPanel;
     @FXML private Group groupNotification;
 
     @FXML private GridPane nextPanel1;
@@ -40,6 +41,7 @@ public class GuiController implements Initializable {
 
     private Rectangle[][] displayMatrix;
     private Rectangle[][] rectangles;
+    private Rectangle[][] ghostRectangles;
 
     // 4×4 preview grids
     private final Rectangle[][] nextMatrix1 = new Rectangle[4][4];
@@ -137,8 +139,21 @@ public class GuiController implements Initializable {
             }
         }
 
+        ghostRectangles = new Rectangle[brick.getBrickData().length][brick.getBrickData()[0].length];
+        for (int i = 0; i < rectangles.length; i++) {
+            for (int j = 0; j < rectangles[i].length; j++) {
+                Rectangle r = new Rectangle(BRICK_SIZE, BRICK_SIZE);
+                r.setFill(getFillColor(brick.getBrickData()[i][j]));
+                ghostRectangles[i][j] = r;
+                ghostBrickPanel.add(r, j, i);
+            }
+        }
+
         brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * brickPanel.getVgap() + brick.getxPosition() * BRICK_SIZE + 130);
         brickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getyPosition() * brickPanel.getHgap() + brick.getyPosition() * BRICK_SIZE - 42);
+
+        ghostBrickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getGhostxPosition() * ghostBrickPanel.getVgap() + brick.getGhostxPosition() * BRICK_SIZE + 130);
+        ghostBrickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getGhostyPosition() * ghostBrickPanel.getHgap() + brick.getGhostyPosition() * BRICK_SIZE - 42);
 
         timeLine = new Timeline(new KeyFrame(Duration.millis(400),
                 ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))));
@@ -147,13 +162,22 @@ public class GuiController implements Initializable {
     }
 
     /** Paint the falling brick */
-    private void refreshBrick(ViewData brick) {
+    public void refreshBrick(ViewData brick) {
         brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * brickPanel.getVgap() + brick.getxPosition() * BRICK_SIZE + 130);
         brickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getyPosition() * brickPanel.getHgap() + brick.getyPosition() * BRICK_SIZE - 42);
+
+        ghostBrickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getGhostxPosition() * ghostBrickPanel.getVgap() + brick.getGhostxPosition() * BRICK_SIZE + 130);
+        ghostBrickPanel.setLayoutY(gamePanel.getLayoutY() + brick.getGhostyPosition() * ghostBrickPanel.getHgap() + brick.getGhostyPosition() * BRICK_SIZE - 42);
 
         for (int i = 0; i < brick.getBrickData().length; i++) {
             for (int j = 0; j < brick.getBrickData()[i].length; j++) {
                 setRectangleData(brick.getBrickData()[i][j], rectangles[i][j]);
+            }
+        }
+
+        for (int i = 0; i < brick.getBrickData().length; i++) {
+            for (int j = 0; j < brick.getBrickData()[i].length; j++) {
+                setRectangleData(brick.getBrickData()[i][j], ghostRectangles[i][j]);
             }
         }
     }

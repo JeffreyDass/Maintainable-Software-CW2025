@@ -126,7 +126,18 @@ public class SimpleBoard implements Board {
         return getViewData();
     }
 
-//    @Override
+    @Override
+    public int hardDrop() {
+        int rowsDropped = ghostBrickOffset.y - currentOffset.y;
+
+        currentOffset = new Point(ghostBrickOffset);
+
+        updateGhostBrick();
+
+        return rowsDropped;
+    }
+
+
     private boolean updateGhostBrick() {
         Point p = calculateGhostBrickOffset(currentOffset);
         ghostBrickOffset = p;

@@ -94,6 +94,16 @@ public class GuiController implements Initializable {
                 ViewData data = eventListener.onHoldEvent();
                 refreshBrick(data);
             }
+            if (e.getCode() == KeyCode.SPACE) {
+                DownData data = eventListener.onHardDropEvent();
+
+                if (data.getClearRow() != null && data.getClearRow().getLinesRemoved() > 0) {
+                    int bonus = data.getClearRow().getScoreBonus();
+                    if (bonus > 0) showScorePopup(bonus);
+                }
+
+                refreshBrick(data.getViewData());
+            }
         }
 
         if (e.getCode() == KeyCode.N)
@@ -265,6 +275,12 @@ public class GuiController implements Initializable {
         }
 
         gamePanel.requestFocus();
+    }
+
+    public void showScorePopup(int amount) {
+        NotificationPanel notify = new NotificationPanel("+" + amount);
+        groupNotification.getChildren().add(notify);
+        notify.showScore(groupNotification.getChildren());
     }
 
     public void setEventListener(InputEventListener eventListener) {

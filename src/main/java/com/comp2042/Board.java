@@ -24,6 +24,8 @@ public interface Board {
 
     int[][] getHeldBrickShape();
 
+    int hardDrop();
+
     void mergeBrickToBackground();
 
     ClearRow clearRows();

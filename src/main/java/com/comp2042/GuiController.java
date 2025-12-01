@@ -38,7 +38,8 @@ public class GuiController implements Initializable {
 
     @FXML private GridPane holdPanel;
 
-    @FXML private Label tallyLabel;
+    @FXML private Label scoreLabel;
+    @FXML private Label linesLabel;
 
     @FXML private GameOverPanel gameOverPanel;
 
@@ -55,6 +56,7 @@ public class GuiController implements Initializable {
 
     private InputEventListener eventListener;
     private Timeline timeLine;
+    private int totalLinesCleared = 0;
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
@@ -268,6 +270,11 @@ public class GuiController implements Initializable {
             DownData downData = eventListener.onDownEvent(event);
 
             if (downData.getClearRow() != null && downData.getClearRow().getLinesRemoved() > 0) {
+                int lines = downData.getClearRow().getLinesRemoved();
+
+                totalLinesCleared += lines;
+                linesLabel.setText("Lines: " + totalLinesCleared);
+
                 NotificationPanel notify =
                         new NotificationPanel("+" + downData.getClearRow().getScoreBonus());
                 groupNotification.getChildren().add(notify);
@@ -278,6 +285,11 @@ public class GuiController implements Initializable {
         }
 
         gamePanel.requestFocus();
+    }
+
+    public void addLinesCleared(int lines) {
+        totalLinesCleared += lines;
+        linesLabel.setText("Lines: " + totalLinesCleared);
     }
 
     public void showScorePopup(int amount) {
@@ -292,7 +304,7 @@ public class GuiController implements Initializable {
 
     public void bindScore(IntegerProperty scoreProperty) {
         scoreProperty.addListener((obs, oldVal, newVal) -> {
-            tallyLabel.setText("Score: " + newVal);
+            scoreLabel.setText("Score: " + newVal);
         });
     }
 

@@ -36,9 +36,13 @@
 
         <GridPane fx:id="holdPanel" hgap="2" vgap="2" alignment="CENTER"/>
 
-        <Label fx:id="tallyLabel"
+        <Label fx:id="scoreLabel"
                text="Score: 0"
-               style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+               style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+        <Label fx:id="linesLabel"
+               text="Lines: 0"
+               style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
 
     </VBox>
 

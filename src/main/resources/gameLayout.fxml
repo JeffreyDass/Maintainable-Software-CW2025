@@ -36,6 +36,10 @@
 
         <GridPane fx:id="holdPanel" hgap="2" vgap="2" alignment="CENTER"/>
 
+        <Label fx:id="tallyLabel"
+               text="Score: 0"
+               style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+
     </VBox>
 
     <VBox layoutX="370" layoutY="40" spacing="10"
@@ -59,7 +63,7 @@
 
     </VBox>
 
-    <Group fx:id="groupNotification" layoutX="14" layoutY="203">
+    <Group fx:id="groupNotification" layoutX="130" layoutY="203">
         <VBox alignment="CENTER">
             <GameOverPanel fx:id="gameOverPanel"/>
         </VBox>

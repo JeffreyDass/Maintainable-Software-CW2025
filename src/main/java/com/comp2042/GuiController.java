@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -36,6 +37,8 @@ public class GuiController implements Initializable {
     @FXML private GridPane nextPanel3;
 
     @FXML private GridPane holdPanel;
+
+    @FXML private Label tallyLabel;
 
     @FXML private GameOverPanel gameOverPanel;
 
@@ -287,7 +290,11 @@ public class GuiController implements Initializable {
         this.eventListener = eventListener;
     }
 
-    public void bindScore(IntegerProperty integerProperty) {}
+    public void bindScore(IntegerProperty scoreProperty) {
+        scoreProperty.addListener((obs, oldVal, newVal) -> {
+            tallyLabel.setText("Score: " + newVal);
+        });
+    }
 
     public void gameOver() {
         timeLine.stop();

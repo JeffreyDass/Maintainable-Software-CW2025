@@ -44,6 +44,10 @@
                text="Lines: 0"
                style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
 
+        <Label fx:id="levelLabel"
+               text="Level: 1"
+               style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+
     </VBox>
 
     <VBox layoutX="370" layoutY="40" spacing="10"

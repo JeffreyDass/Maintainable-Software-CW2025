@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
+import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -40,6 +41,7 @@ public class GuiController implements Initializable {
 
     @FXML private Label scoreLabel;
     @FXML private Label linesLabel;
+    @FXML private Label levelLabel;
 
     @FXML private GameOverPanel gameOverPanel;
 
@@ -57,6 +59,9 @@ public class GuiController implements Initializable {
     private InputEventListener eventListener;
     private Timeline timeLine;
     private int totalLinesCleared = 0;
+    private int level = 1;
+
+    private static final int LINES_PER_LEVEL = 10;
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
@@ -101,11 +106,7 @@ public class GuiController implements Initializable {
             }
             if (e.getCode() == KeyCode.SPACE) {
                 DownData data = eventListener.onHardDropEvent();
-
-                if (data.getClearRow() != null && data.getClearRow().getLinesRemoved() > 0) {
-                    int bonus = data.getClearRow().getScoreBonus();
-                    if (bonus > 0) showScorePopup(bonus);
-                }
+                handleClearRow(data.getClearRow());
 
                 refreshBrick(data.getViewData());
             }
@@ -268,23 +269,36 @@ public class GuiController implements Initializable {
     private void moveDown(MoveEvent event) {
         if (!isPause.get()) {
             DownData downData = eventListener.onDownEvent(event);
-
-            if (downData.getClearRow() != null && downData.getClearRow().getLinesRemoved() > 0) {
-                int lines = downData.getClearRow().getLinesRemoved();
-
-                totalLinesCleared += lines;
-                linesLabel.setText("Lines: " + totalLinesCleared);
-
-                NotificationPanel notify =
-                        new NotificationPanel("+" + downData.getClearRow().getScoreBonus());
-                groupNotification.getChildren().add(notify);
-                notify.showScore(groupNotification.getChildren());
-            }
-
+            handleClearRow(downData.getClearRow());
             refreshBrick(downData.getViewData());
         }
 
         gamePanel.requestFocus();
+    }
+
+    private void handleClearRow(ClearRow clearRow) {
+        if (clearRow == null || clearRow.getLinesRemoved() == 0) {
+            return;
+        }
+
+        NotificationPanel notify =
+                new NotificationPanel("+" + clearRow.getScoreBonus());
+        groupNotification.getChildren().add(notify);
+        notify.showScore(groupNotification.getChildren());
+
+        totalLinesCleared += clearRow.getLinesRemoved();
+        linesLabel.setText("Lines: " + totalLinesCleared);
+
+        int newLevel = 1 + (totalLinesCleared / LINES_PER_LEVEL);
+        if (newLevel != level) {
+            level = newLevel;
+            levelLabel.setText("Level: " + level);
+
+            if (timeLine != null) {
+                double speedFactor = 1.0 + (level - 1) * 0.25; // tweak as you like
+                timeLine.setRate(speedFactor);
+            }
+        }
     }
 
     public void addLinesCleared(int lines) {
@@ -318,6 +332,16 @@ public class GuiController implements Initializable {
         timeLine.stop();
         gameOverPanel.setVisible(false);
         eventListener.createNewGame();
+
+        // reset level + lines
+        totalLinesCleared = 0;
+        level = 1;
+        linesLabel.setText("Lines: 0");
+        levelLabel.setText("Level: 1");
+        if (timeLine != null) {
+            timeLine.setRate(1.0);
+        }
+
         timeLine.play();
         isPause.set(false);
         isGameOver.set(false);

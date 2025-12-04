@@ -7,8 +7,8 @@
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
 
-<Pane fx:controller="com.comp2042.GuiController"
-      xmlns:fx="http://javafx.com/fxml">
+<AnchorPane fx:controller="com.comp2042.GuiController"
+            xmlns:fx="http://javafx.com/fxml">
 
     <!-- Active falling block -->
     <GridPane fx:id="brickPanel" vgap="1" hgap="1" layoutX="130"/>
@@ -71,6 +71,33 @@
 
     </VBox>
 
+    <AnchorPane fx:id="pauseOverlay"
+                visible="false"
+                style="-fx-background-color: rgba(0,0,0,0.6);"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0">
+
+        <VBox fx:id="pauseBox"
+              spacing="20"
+              alignment="CENTER"
+              prefWidth="320"
+              prefHeight="320"
+              AnchorPane.topAnchor="100"
+              AnchorPane.leftAnchor="85"
+              style="-fx-background-color: #222;
+                 -fx-padding: 30;
+                 -fx-background-radius: 15;">
+            <Label text="PAUSED"
+                   style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" />
+            <Button fx:id="btnResume" text="Resume"  prefWidth="160"/>
+            <Button fx:id="btnNewGame" text="New Game" prefWidth="160"/>
+            <Button fx:id="btnQuit"   text="Quit" prefWidth="160"/>
+        </VBox>
+
+    </AnchorPane>
+
     <Group fx:id="groupNotification" layoutX="130" layoutY="203">
         <VBox alignment="CENTER">
             <GameOverPanel fx:id="gameOverPanel"/>
@@ -81,4 +108,4 @@
         <URL value="@window_style.css"/>
     </stylesheets>
 
-</Pane>
+</AnchorPane>

@@ -17,6 +17,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.application.Platform;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -42,6 +45,11 @@ public class GuiController implements Initializable {
     @FXML private Label scoreLabel;
     @FXML private Label linesLabel;
     @FXML private Label levelLabel;
+
+    @FXML private AnchorPane pauseOverlay;
+    @FXML private Button btnResume;
+    @FXML private Button btnNewGame;
+    @FXML private Button btnQuit;
 
     @FXML private GameOverPanel gameOverPanel;
 
@@ -82,10 +90,19 @@ public class GuiController implements Initializable {
 
         setupPreviewPanel(holdPanel, holdMatrix);
 
+        btnResume.setOnAction(e -> resumeGame());
+        btnNewGame.setOnAction(e -> newGame(null));
+        btnQuit.setOnAction(e -> Platform.exit());
+
         gameOverPanel.setVisible(false);
     }
 
     private void handleKeyPress(KeyEvent e) {
+        if (e.getCode() == KeyCode.ESCAPE) {
+            togglePause();
+            return;
+        }
+
         if (!isPause.get() && !isGameOver.get()) {
 
             if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.A)
@@ -107,7 +124,6 @@ public class GuiController implements Initializable {
             if (e.getCode() == KeyCode.SPACE) {
                 DownData data = eventListener.onHardDropEvent();
                 handleClearRow(data.getClearRow());
-
                 refreshBrick(data.getViewData());
             }
         }
@@ -322,6 +338,34 @@ public class GuiController implements Initializable {
         });
     }
 
+    public void togglePause() {
+        if (isPause.get()) {
+            resumeGame();
+        } else {
+            pauseGameOverlay();
+        }
+    }
+
+    private void pauseGameOverlay() {
+        isPause.set(true);
+        timeLine.pause();
+        pauseOverlay.setVisible(true);
+
+        pauseOverlay.toFront();
+        pauseOverlay.setMouseTransparent(false);
+    }
+
+    private void resumeGame() {
+        pauseOverlay.setVisible(false);
+        pauseOverlay.setMouseTransparent(true);
+        pauseOverlay.toBack();
+
+        isPause.set(false);
+        timeLine.play();
+
+        gamePanel.requestFocus();
+    }
+
     public void gameOver() {
         timeLine.stop();
         gameOverPanel.setVisible(true);
@@ -329,15 +373,21 @@ public class GuiController implements Initializable {
     }
 
     public void newGame(ActionEvent actionEvent) {
+
+        pauseOverlay.setVisible(false);  // <-- FIX
+        pauseOverlay.toBack();
+        pauseOverlay.setMouseTransparent(true);
+
         timeLine.stop();
         gameOverPanel.setVisible(false);
         eventListener.createNewGame();
 
-        // reset level + lines
         totalLinesCleared = 0;
         level = 1;
+
         linesLabel.setText("Lines: 0");
         levelLabel.setText("Level: 1");
+
         if (timeLine != null) {
             timeLine.setRate(1.0);
         }

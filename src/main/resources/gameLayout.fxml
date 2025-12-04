@@ -6,9 +6,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.media.Media?>
+<?import javafx.scene.media.MediaPlayer?>
 
 <AnchorPane fx:controller="com.comp2042.GuiController"
             xmlns:fx="http://javafx.com/fxml">
+
+    <MediaView fx:id="backgroundVideo"
+               preserveRatio="false"
+               fitWidth="800" fitHeight="600"
+               AnchorPane.topAnchor="0"
+               AnchorPane.bottomAnchor="0"
+               AnchorPane.leftAnchor="0"
+               AnchorPane.rightAnchor="0"/>
 
     <!-- Active falling block -->
     <GridPane fx:id="brickPanel" vgap="1" hgap="1" layoutX="130"/>

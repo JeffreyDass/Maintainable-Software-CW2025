@@ -20,6 +20,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -51,6 +54,8 @@ public class GuiController implements Initializable {
     @FXML private Button btnNewGame;
     @FXML private Button btnQuit;
 
+    @FXML private MediaView backgroundVideo;
+
     @FXML private GameOverPanel gameOverPanel;
 
     private Rectangle[][] displayMatrix;
@@ -71,6 +76,8 @@ public class GuiController implements Initializable {
 
     private static final int LINES_PER_LEVEL = 10;
 
+    private MediaPlayer bgPlayer;
+
     private final BooleanProperty isPause = new SimpleBooleanProperty();
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
@@ -78,6 +85,8 @@ public class GuiController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader()
                 .getResource("digital.ttf").toExternalForm(), 38);
+
+        initBackgroundVideo();
 
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
@@ -95,6 +104,20 @@ public class GuiController implements Initializable {
         btnQuit.setOnAction(e -> Platform.exit());
 
         gameOverPanel.setVisible(false);
+    }
+
+    private void initBackgroundVideo() {
+        URL mediaUrl = getClass().getResource("/Tetris_Video_Background.mp4");
+
+        Media media = new Media(mediaUrl.toExternalForm());
+        bgPlayer = new MediaPlayer(media);
+
+        bgPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        bgPlayer.setVolume(0.2);
+
+        backgroundVideo.setMediaPlayer(bgPlayer);
+
+        bgPlayer.play();
     }
 
     private void handleKeyPress(KeyEvent e) {

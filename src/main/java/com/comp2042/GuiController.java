@@ -77,6 +77,7 @@ public class GuiController implements Initializable {
     private static final int LINES_PER_LEVEL = 10;
 
     private MediaPlayer bgPlayer;
+    private MediaPlayer musicPlayer;
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
@@ -87,6 +88,7 @@ public class GuiController implements Initializable {
                 .getResource("digital.ttf").toExternalForm(), 38);
 
         initBackgroundVideo();
+        initBackgroundMusic();
 
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
@@ -113,11 +115,31 @@ public class GuiController implements Initializable {
         bgPlayer = new MediaPlayer(media);
 
         bgPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        bgPlayer.setVolume(0.2);
+        bgPlayer.setMute(true);
 
         backgroundVideo.setMediaPlayer(bgPlayer);
 
         bgPlayer.play();
+    }
+
+    private void initBackgroundMusic() {
+        try {
+            URL musicURL = getClass().getResource("/Tetris_BGM.mp3");
+            if (musicURL == null) {
+                System.out.println("Music file not found!");
+                return;
+            }
+
+            Media music = new Media(musicURL.toExternalForm());
+            musicPlayer = new MediaPlayer(music);
+
+            musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            musicPlayer.setVolume(0.1);
+
+            musicPlayer.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleKeyPress(KeyEvent e) {

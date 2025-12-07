@@ -8,12 +8,19 @@ import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Generates random bricks for the game.
+ * Maintains a queue to ensure fair distribution.
+ */
 public class RandomBrickGenerator implements BrickGenerator {
 
     private final List<Brick> brickList;
-
     private final Deque<Brick> nextBricks = new ArrayDeque<>();
 
+    /**
+     * Creates a new random brick generator.
+     * Initializes the brick list with all 7 tetromino types.
+     */
     public RandomBrickGenerator() {
         brickList = new ArrayList<>();
         brickList.add(new IBrick());
@@ -23,12 +30,15 @@ public class RandomBrickGenerator implements BrickGenerator {
         brickList.add(new SBrick());
         brickList.add(new TBrick());
         brickList.add(new ZBrick());
+
+        // Pre-generate two bricks
         nextBricks.add(brickList.get(ThreadLocalRandom.current().nextInt(brickList.size())));
         nextBricks.add(brickList.get(ThreadLocalRandom.current().nextInt(brickList.size())));
     }
 
     @Override
     public Brick getBrick() {
+        // Keep at least one brick in queue
         if (nextBricks.size() <= 1) {
             nextBricks.add(brickList.get(ThreadLocalRandom.current().nextInt(brickList.size())));
         }

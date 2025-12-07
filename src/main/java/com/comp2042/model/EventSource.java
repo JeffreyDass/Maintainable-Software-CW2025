@@ -1,5 +1,13 @@
 package com.comp2042.model;
 
+/**
+ * Indicates where a game event originated from.
+ * USER = player input, THREAD = automatic game tick.
+ */
 public enum EventSource {
-    USER, THREAD
+    /** Event triggered by player input */
+    USER,
+
+    /** Event triggered by game timer */
+    THREAD
 }
